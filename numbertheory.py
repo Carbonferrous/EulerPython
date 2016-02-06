@@ -1,4 +1,5 @@
 import math
+
 def primeList(n):
     primes = []
     isPrime = [True] * (n + 1)
@@ -13,6 +14,7 @@ def primeList(n):
 	    if isPrime[i]:
 		    primes.append(i)
     return primes
+
 def isPrime(n):
     if n % 2 == 0 or n % 3 == 0:
         return False
@@ -22,6 +24,7 @@ def isPrime(n):
             return False
         divisor = divisor + 6
     return True
+
 def primeFactor(n):
     divisor = 2
     divList = []
@@ -47,9 +50,22 @@ def primeFactor(n):
     countList = [divList.count(x) for x in list(set(divList))]
     divList = list(set(divList))
     return sorted(list(zip(divList, countList)))
+
 def totient(n):
     PrimeFactors = primeFactor(n)
     div = [PrimeFactors[x][0] for x in range(0,len(PrimeFactors))]
     for x in div:
         n = n * (x - 1) // x
     return n
+
+def contfracsqrt(n):
+    m = 0
+    d = 1
+    a0 = int(math.sqrt(n))
+    a = a0
+    yield a
+    while a != 2 * a0:
+        m = d * a - m
+        d = int((n - m ** 2) / d)
+        a = int((a0 + m) / d)
+        yield a
