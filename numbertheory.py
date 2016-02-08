@@ -69,3 +69,11 @@ def contfracsqrt(n):
         d = int((n - m ** 2) / d)
         a = int((a0 + m) / d)
         yield a
+
+def contfrac2real(a):
+    n = a[len(a) - 1]
+    d = 1
+    for i in range(len(a) - 2, -1, -1):
+        n, d = d, n
+        n = a[i] * d + n
+    return [n, d]
