@@ -1,19 +1,25 @@
 import math
+import bitarray
+import itertools
 
 def primeList(n):
-    primes = []
-    isPrime = [True] * (n + 1)
-    maxTest = int(math.sqrt(n)+1)
-    isPrime[0] = False
-    isPrime[1] = False
-    for x in range(2, maxTest):
-        if isPrime[x]:
-            for j in range(2*x, n+1, x):
-                isPrime[j] = False
-    for i in range(0, n+1):
-	    if isPrime[i]:
-		    primes.append(i)
-    return primes
+    m = (n - 1) // 2
+    B = bitarray.bitarray(m)
+    B.setall(True)
+    i = 0
+    p = 3
+    yield 2
+
+    while n > p ** 2:
+        if B[i]:
+            yield p
+            j = 2*i**2+6*i+3
+            B[j::2*i+3] = False
+        i += 1
+        p += 2
+    for x in range(i, m):
+        if B[x]:
+            yield p + 2 * (x - i)
 
 def isPrime(n):
     if n % 2 == 0 or n % 3 == 0:
@@ -50,6 +56,13 @@ def primeFactor(n):
     countList = [divList.count(x) for x in list(set(divList))]
     divList = list(set(divList))
     return sorted(list(zip(divList, countList)))
+
+def numDivisor(n):
+    f = primeFactor(n)
+    n = 1
+    for x in f:
+        n = n * (x[1] + 1)
+    return n
 
 def totient(n):
     PrimeFactors = primeFactor(n)
