@@ -1,2 +1,14 @@
-a, b, c = 1, 4, a + b
-print(a, b, c)
+def period(n):
+	count = 1
+	LIMIT = 1000
+	while 10**count % n != 1 and count < LIMIT:
+		count += 1
+	if count == LIMIT:
+		return 0
+	else:
+		return count
+
+m = 0
+for d in range(2, 1000):
+	if period(d) == 6 and period(d+6) == 4:
+		print(d)
