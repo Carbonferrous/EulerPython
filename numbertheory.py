@@ -32,30 +32,38 @@ def isPrime(n):
     return True
 
 def primeFactor(n):
-    divisor = 2
-    divList = []
-    while n % divisor == 0:
-        n = n // divisor
-        divList.append(divisor)
-    divisor = divisor + 1
-    while n % divisor == 0:
-        n = n // divisor
-        divList.append(divisor)
-    divisor = 5
-    while divisor <= math.sqrt(n):
-        if n % divisor == 0:
-            n = n // divisor
-            divList.append(divisor)
-        elif n % (divisor + 2) == 0:
-            n = n // (divisor + 2)
-            divList.append((divisor + 2))   
-        else:
-            divisor = divisor + 6
+    exp = 0
+    while n & 1 == 0:
+        n = n >> 1
+        exp += 1
+    if exp > 0:
+        yield (2, exp)
+
+    div = 3
+    exp = 0
+    while n % div == 0:
+        n = n // div
+        exp += 1
+    if exp > 0:
+        yield (3, exp)
+    
+    div = 5
+    while div <= math.sqrt(n):
+        exp = 0
+        while n % div == 0:
+            n = n // div
+            exp += 1
+        if exp > 0:
+            yield (div, exp)
+        exp = 0
+        while n % (div + 2) == 0:
+            n = n // (div + 2)
+            exp += 1
+        if exp > 0:
+            yield (div + 2, exp)
+        div = div + 6
     if n != 1:
-        divList.append(n)
-    countList = [divList.count(x) for x in list(set(divList))]
-    divList = list(set(divList))
-    return sorted(list(zip(divList, countList)))
+        yield (n, 1)
 
 def numDivisor(n):
     f = primeFactor(n)
