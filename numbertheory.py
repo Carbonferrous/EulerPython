@@ -72,6 +72,13 @@ def numDivisor(n):
         n = n * (x[1] + 1)
     return n
 
+def sigma(n):
+    p = list(primeFactor(n))
+    t = 1
+    for div, exp in p:
+        t *= (div ** (exp + 1) - 1)//(div - 1)
+    return t
+
 def totient(n):
     PrimeFactors = primeFactor(n)
     div = [PrimeFactors[x][0] for x in range(0,len(PrimeFactors))]
