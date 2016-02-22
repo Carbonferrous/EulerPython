@@ -10,7 +10,7 @@ def primeList(n):
     p = 3
     yield 2
 
-    while n > p ** 2:
+    while n >= p ** 2:
         if B[i]:
             yield p
             j = 2*i**2+6*i+3
