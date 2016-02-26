@@ -4,11 +4,14 @@ import itertools
 
 def primeList(n):
     m = (n - 1) // 2
+    if m < 0:
+        return
     B = bitarray.bitarray(m)
     B.setall(True)
     i = 0
     p = 3
-    yield 2
+    if n > 1:
+        yield 2
 
     while n >= p ** 2:
         if B[i]:
@@ -21,8 +24,31 @@ def primeList(n):
         if B[x]:
             yield p + 2 * (x - i)
 
+def lucky(n):
+    if n >= 3:
+        yield 1
+        siv = list(range(1, n+1))
+        temp = siv
+    elif n > 0:
+        yield 1
+        return
+    else:
+        return
+    a = 1
+    d = 2
+    while a < len(siv):
+        temp = list(filter(lambda x: x[0] % d != 0, list(enumerate(siv,1))))
+        siv = list(temp[b][1] for b in range(0,len(temp)))
+        if a >= len(siv):
+            break
+        d = siv[a]
+        yield siv[a]
+        a += 1
+
 def isPrime(n):
-    if n % 2 == 0 or n % 3 == 0:
+    if n == 2 or n == 3:
+        return True
+    if n & 1 == 0 or n % 3 == 0 or n == 1 or n < 0:
         return False
     divisor = 5
     while divisor <= math.sqrt(n):
@@ -32,6 +58,8 @@ def isPrime(n):
     return True
 
 def primeFactor(n):
+    if n <= 0:
+        return
     exp = 0
     while n & 1 == 0:
         n = n >> 1
@@ -66,25 +94,94 @@ def primeFactor(n):
         yield (n, 1)
 
 def numDivisor(n):
+    if n <= 0:
+        return
     f = primeFactor(n)
     n = 1
     for x in f:
         n = n * (x[1] + 1)
     return n
 
-def sigma(n):
+def numDivisorList(n):
+    if n < 0:
+        return
+    elif n == 0:
+        yield 1
+        return
+    elif n == 1:
+        yield 1
+        yield 1
+        return
+    elif n == 2:
+        yield 1
+        yield 1
+        yield 2
+        return
+    else:
+        pass
+    divcount = [1]*(n+1)
+    yield divcount[0]
+    yield divcount[1]
+    for a in range(2, n+1):
+        for x in range(a, n+1, a):
+            divcount[x] += 1
+        yield divcount[a]
+
+def sumDivisor(n):
+    if n <= 0:
+        return 0
     p = list(primeFactor(n))
     t = 1
     for div, exp in p:
         t *= (div ** (exp + 1) - 1)//(div - 1)
     return t
 
+def sumDivisorList(n):
+    if n < 0:
+        return
+    elif n == 0:
+        yield 0
+        return
+    elif n == 1:
+        yield 0
+        yield 1
+        return
+    elif n == 2:
+        yield 0
+        yield 1
+        yield 3
+        return
+    else:
+        pass
+    s = [1]*n
+    yield 0
+    yield s[1]
+    for a in range(2, n):
+        for x in range(a, n, a):
+            s[x] += a
+        yield s[a]
+
 def totient(n):
-    PrimeFactors = primeFactor(n)
+    if n <= 0:
+        return 0
+    PrimeFactors = list(primeFactor(n))
     div = [PrimeFactors[x][0] for x in range(0,len(PrimeFactors))]
     for x in div:
         n = n * (x - 1) // x
     return n
+
+def reciperiod(n):
+    #returns period of 1/n
+    if n <= 0:
+        return 0
+    count = 1
+    LIMIT = 1000
+    while 10**count % n != 1 and count < LIMIT:
+    	count += 1
+    if count == LIMIT:
+        return 0
+    else:
+        return count
 
 def contfracsqrt(n):
     m = 0
