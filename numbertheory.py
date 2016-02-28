@@ -96,50 +96,23 @@ def primeFactor(n):
 def numDivisor(n):
     if n <= 0:
         return
-    f = primeFactor(n)
-    n = 1
-    for x in f:
-        n = n * (x[1] + 1)
-    return n
-
-def numDivisorList(n):
-    if n < 0:
-        return
-    elif n == 0:
-        yield 1
-        return
-    elif n == 1:
-        yield 1
-        yield 1
-        return
-    elif n == 2:
-        yield 1
-        yield 1
-        yield 2
-        return
-    else:
-        pass
-    divcount = [1]*(n+1)
-    yield divcount[0]
-    yield divcount[1]
-    for a in range(2, n+1):
-        for x in range(a, n+1, a):
-            divcount[x] += 1
-        yield divcount[a]
+    p = primeFactor(n)
+    t = 1
+    for div, exp in p:
+        t *= exp + 1
+    return t
 
 def sumDivisor(n):
     if n <= 0:
-        return 0
-    p = list(primeFactor(n))
+        return
+    p = primeFactor(n)
     t = 1
     for div, exp in p:
-        t *= (div ** (exp + 1) - 1)//(div - 1)
+        t *= (div ** (exp + 1) - 1) // (div - 1)
     return t
 
-def sumDivisorList(n):
-    if n < 0:
-        return
-    elif n == 0:
+def divisorList(n, x):
+    if n <= 0:
         yield 0
         return
     elif n == 1:
@@ -149,17 +122,18 @@ def sumDivisorList(n):
     elif n == 2:
         yield 0
         yield 1
-        yield 3
+        yield 1 + 2**x
         return
     else:
         pass
-    s = [1]*n
+    divList = [1]*(n + 1)
     yield 0
-    yield s[1]
-    for a in range(2, n):
-        for x in range(a, n, a):
-            s[x] += a
-        yield s[a]
+    yield divList[1]
+    for div in range(2, n+1):
+        for i in range(div, n+1, div):
+            divList[i] += div**x
+        yield divList[div]
+
 
 def totient(n):
     if n <= 0:
@@ -169,6 +143,30 @@ def totient(n):
     for x in div:
         n = n * (x - 1) // x
     return n
+
+def totientList(n):
+    if n <= 0:
+        yield 0
+        return
+    elif n == 1:
+        yield 0
+        yield 1
+        return
+    else:
+        pass
+    divList = list(range(n+1))
+    yield 0
+    yield divList[1]
+    x = 2
+    for div in primeList(n):
+        for i in range(div, n+1, div):
+            divList[i] = divList[i] * (div - 1) // div
+        while x <= div:
+            yield divList[x]
+            x += 1
+    while x <= n:
+        yield divList[x]
+        x += 1
 
 def reciperiod(n):
     #returns period of 1/n
