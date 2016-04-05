@@ -200,3 +200,31 @@ def contfrac2real(a):
         n, d = d, n
         n = a[i] * d + n
     return [n, d]
+
+def stringSqrt(number, digits):
+    numberS = str(number)
+    if "." not in numberS:
+        numberS += "."
+    a = numberS.split(".")[0]
+    b = numberS.split(".")[1]
+    if len(a) & 1 == 1:
+        a = "0" + a
+    if len(b) & 1 == 1:
+        b = b + "0"
+    numberS = a + b + "00" * (digits - len(b) // 2 - len(a) // 2)
+    c = 0
+    p = 0
+    x = 0
+    y = 0
+    d = len(a)//2
+    while len(numberS) > 0:
+        c = 100 * c + int(numberS[0:2])
+        numberS = numberS[2:]
+        for x in range(9, -1, -1):
+            if x * (20 * p + x) <= c:
+                break
+        y = x * (20 * p + x)
+        p = 10 * p + x
+        c -= y
+#    return str(p)[0:d] + "." + str(p)[d:]
+    return p
