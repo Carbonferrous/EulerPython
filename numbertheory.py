@@ -201,13 +201,8 @@ def contfrac2real(a):
         n = a[i] * d + n
     return [n, d]
 
-<<<<<<< HEAD
-def sqrtGen(number):
-    numberS = str(number)
-=======
 def sqrtGen(n):
     numberS = str(n)
->>>>>>> origin/master
     if "." not in numberS:
         numberS += "."
     a = numberS.split(".")[0]
@@ -221,10 +216,7 @@ def sqrtGen(n):
     p = 0
     x = 0
     y = 0
-<<<<<<< HEAD
     d = len(a)//2
-=======
->>>>>>> origin/master
     while True:
         c = 100 * c + int(numberS[0:2])
         numberS = numberS[2:] + "00"
