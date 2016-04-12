@@ -1,13 +1,11 @@
 import math
-import bitarray
 import itertools
 
 def primeList(n):
     m = (n - 1) // 2
     if m < 0:
         return
-    B = bitarray.bitarray(m)
-    B.setall(True)
+    B = [True] * m
     i = 0
     p = 3
     if n > 1:
@@ -17,7 +15,7 @@ def primeList(n):
         if B[i]:
             yield p
             j = 2*i**2+6*i+3
-            B[j::2*i+3] = False
+            B[j::2*i+3] = [False] * len(B[j::2*i+3])
         i += 1
         p += 2
     for x in range(i, m):
