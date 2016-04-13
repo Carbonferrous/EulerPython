@@ -14,11 +14,13 @@ def product(l):
         x *= i + 1
     return x
 
-def countstuff(n):
+def countstuff(n, base):
     s = 0
     exp = 0
-    digits = int2base(n, 7)
+    digits = int2base(n, base)
     for x in range(len(digits)):
-        s += tri(digits[x]) * 28 ** exp * product(digits[x+1:])
+        s += tri(digits[x]) * tri(base) ** exp * product(digits[x+1:])
         exp += 1
     return s
+
+print(countstuff(10**9, 7))
