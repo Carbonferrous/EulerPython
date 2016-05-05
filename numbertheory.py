@@ -225,3 +225,18 @@ def sqrtGen(n):
         p = 10 * p + x
         c -= y
         yield x
+
+def _fib(n):
+    if n == 0:
+        return (0, 1)
+    else:
+        a, b = _fib(n // 2)
+        c = a * (b * 2 - a)
+        d = a * a + b * b
+        if n & 1 == 0:
+            return (c, d)
+        else:
+            return (d, c + d)
+
+def fib(n):
+    return _fib(n)[0]
