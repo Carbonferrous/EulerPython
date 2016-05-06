@@ -1,3 +1,4 @@
+from math import sqrt
 def fib(n):
     if n == 0:
         return (0, 1)
@@ -13,19 +14,32 @@ def fib(n):
 def sol(n):
     return sum(fib(n)[0] for n in range(9, 6*n+3 + 1, 6))>>1
 
-def sol2(n, x):
+#f(6n+3) = 5f(6(n-1)+3)+8f(6(n-1)+3+1)
+#f(6n+3+1) = 8f(6(n-1)+3)+13f(6(n-1)+3+1)
+#f(6+3)+f(6*2+3)+...+f(6*(n-1)+3)+f(6n+3)
+def sol2(n):
     a = 17
     b = 55
     s = 0
     for i in range(n):
         s += a
         a, b = 5*a + (b<<2), (a<<4) + 13*b
-        a, b = a%x, b%x
-    return s%x
+        a, b = a, b
+    return s
 
-#f(6n+3) = 5f(6(n-1)+3)+8f(6(n-1)+3+1)
-#f(6n+3+1) = 8f(6(n-1)+3)+13f(6(n-1)+3+1)
-#f(6+3)+f(6*2+3)+...+f(6*(n-1)+3)+f(6n+3)
+def sol3(n, x=10**9+7):
+    m = n
+    y = x
+    a = 1
+    b = 17
+    s = 0
+    for i in range(m):
+        a, b = b, 18*b-a
+        b = b%y
+        s += a
+    return s%y
+
+print(sol3(1234567, 10**9+7))
 
 #for i in range(int(input())):
 #    print(sol(int(input())))
