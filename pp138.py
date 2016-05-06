@@ -23,6 +23,14 @@ def sol2(n, x):
         a, b = a%x, b%x
     return s%x
 
+#calculates solution directly
+def sol4(n):
+    a = 17
+    b = 322
+    for i in range(n-1):
+        a, b = b, 18*b-a+16
+    return a
+
 #f(6n+3) = 5f(6(n-1)+3)+8f(6(n-1)+3+1)
 #f(6n+3+1) = 8f(6(n-1)+3)+13f(6(n-1)+3+1)
 #f(6+3)+f(6*2+3)+...+f(6*(n-1)+3)+f(6n+3)
