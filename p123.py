@@ -3,12 +3,11 @@ import numbertheory
 ##if n is odd, return 2*n*p
 ##if n is even, return 2
 
-def r():
-    n = 1
-    for p in numbertheory.primeList(10**4):
-        yield (p, n, ((p-1)**n + (p+1)**n)%p**2, ((p-1)**n + (p+1)**n)%p**2/p)
-        n += 1
-
-primes =  r()
-for p in primes:
-    print(p)
+primes =  numbertheory.primeList(10**6)
+n = 1
+p = next(primes)
+while 2*n*p < 10**10:
+    n += 2
+    next(primes)
+    p = next(primes)
+print(n, p)
