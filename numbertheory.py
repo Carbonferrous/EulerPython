@@ -1,6 +1,7 @@
 import math
 import itertools
 
+#generates primes up to n
 def primeList(n):
     m = (n - 1) // 2
     if m < 0:
@@ -22,6 +23,7 @@ def primeList(n):
         if B[x]:
             yield p + 2 * (x - i)
 
+#generates lucky numbers up to n
 def lucky(n):
     if n >= 3:
         yield 1
@@ -43,7 +45,8 @@ def lucky(n):
         yield siv[a]
         a += 1
 
-def isPrime(n):
+#depreciated trial test
+def _isPrime(n):
     if n == 2 or n == 3:
         return True
     if n & 1 == 0 or n % 3 == 0 or n == 1 or n < 0:
@@ -55,6 +58,33 @@ def isPrime(n):
         divisor = divisor + 6
     return True
 
+#Uses a combination of trial testing (below 257) and Miller-Rabin Strong primality test with 'a' an element of primes below k
+def isPrime(n, k = 20):
+    if n < 2:
+        return False
+    for p in primeList(257):
+        if p ** 2 > n:
+            return True
+        if n % p == 0:
+            return False
+    d = n - 1
+    s = 0
+    while d & 1 == 0:
+        d = d >> 1
+        s += 1
+    for a in primeList(k):
+        aPrime = False
+        if pow(a, d, n) == 1:
+            continue
+        for r in range(s):
+            if pow(a, d*2**r, n) == n-1:
+                aPrime = True
+                break
+        if not aPrime:
+            return False
+    return True
+
+#trivial divison factoring of n
 def primeFactor(n):
     if n <= 0:
         return
@@ -91,6 +121,7 @@ def primeFactor(n):
     if n != 1:
         yield (n, 1)
 
+#returns number of divisors of n
 def numDivisor(n):
     if n <= 0:
         return
@@ -100,6 +131,7 @@ def numDivisor(n):
         t *= exp + 1
     return t
 
+#returns sum of divisors of n
 def sumDivisor(n):
     if n <= 0:
         return
@@ -109,6 +141,7 @@ def sumDivisor(n):
         t *= (div ** (exp + 1) - 1) // (div - 1)
     return t
 
+#generates sigma up to n, each divisor is raised to power x
 def divisorList(n, x):
     if n <= 0:
         yield 0
@@ -132,7 +165,7 @@ def divisorList(n, x):
             divList[i] += div**x
         yield divList[div]
 
-
+#returns totient of n
 def totient(n):
     if n <= 0:
         return 0
@@ -142,6 +175,7 @@ def totient(n):
         n = n * (x - 1) // x
     return n
 
+#generates totient of numbers up to n, beginning with 0
 def totientList(n):
     if n <= 0:
         yield 0
@@ -166,8 +200,8 @@ def totientList(n):
         yield divList[x]
         x += 1
 
+#returns period of 1/n
 def reciperiod(n):
-    #returns period of 1/n
     if n <= 0:
         return 0
     count = 1
@@ -179,6 +213,7 @@ def reciperiod(n):
     else:
         return count
 
+#continued fraction of sqrt(n), stops after it repeats
 def contfracsqrt(n):
     m = 0
     d = 1
@@ -191,6 +226,7 @@ def contfracsqrt(n):
         a = int((a0 + m) / d)
         yield a
 
+#continued fraction list to real fraction
 def contfrac2real(a):
     n = a[len(a) - 1]
     d = 1
@@ -199,6 +235,7 @@ def contfrac2real(a):
         n = a[i] * d + n
     return [n, d]
 
+#infinite precision sqrt decimal generator
 def sqrtGen(n):
     numberS = str(n)
     if "." not in numberS:
@@ -226,6 +263,7 @@ def sqrtGen(n):
         c -= y
         yield x
 
+#returns fib(n)
 def _fib(n):
     if n == 0:
         return (0, 1)
@@ -238,5 +276,58 @@ def _fib(n):
         else:
             return (d, c + d)
 
-def fib(n):
-    return _fib(n)[0]
+#returns fib(n)%m
+def _fibmod(n, m):
+    if n == 0:
+        return (0, 1)
+    else:
+        a, b = _fibmod(n // 2, m)
+        c = a * (b * 2 - a)
+        d = a**2 + b**2
+        if n & 1 == 0:
+            return (c%m, d%m)
+        else:
+            return (d%m, (c + d)%m)
+
+#interface for _fib(n) and _fibmod(n, m)
+def fib(n, m = None):
+    if m == None:
+        return _fib(n)[0]
+    return _fibmod(n, m)[0]
+
+#traverses the pythagorean tree with specific path using 'u', 'a', 'd'
+def pythagTreeTraverse(traversal):
+    uad = {'u':lambda m, n: (2*m-n, m),
+           'a':lambda m, n: (2*m+n, m),
+           'd':lambda m, n: (m+2*n, n)}
+    uad['U'] = uad['u']
+    uad['A'] = uad['a']
+    uad['D'] = uad['d']
+    m, n = 2, 1
+    for t in traversal:
+        m, n = uad[t](m, n)
+    return (m**2-n**2, 2*m*n, m**2+n**2)
+
+#generates pythagorean triplets with limits restricting the search space
+def pythag(limits = lambda m,n: True):
+    #a, b, c = m**2-n**2, 2*m*n, m**2+n**2
+    uad = {'u':lambda m, n: (2*m-n, m), #increases at rate approaching 1 (smaller than d)
+           'a':lambda m, n: (2*m+n, m), #increases at rate approaching 2sqrt2+3
+           'd':lambda m, n: (m+2*n, n)} #increases at rate approaching 1
+    l = limits #function of m,n to define when to continue
+    root = [(2, 1)]
+    branch = []
+    while len(root) > 0:
+        for m, n in root:
+            yield (m**2-n**2, 2*m*n, m**2+n**2)
+            p, q = uad['u'](m, n)
+            if l(p, q):
+                branch += [(p, q)]
+            p, q = uad['d'](m, n)
+            if l(p, q):
+                branch += [(p, q)]
+            p, q = uad['a'](m, n)
+            if l(p, q):
+                branch += [(p, q)]
+        root = branch
+        branch = []

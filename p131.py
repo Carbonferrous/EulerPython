@@ -1,4 +1,3 @@
-from numbertheory import primeList
 ##Brute force search results
 ##p n k
 ##7 1 2
@@ -26,12 +25,17 @@ from numbertheory import primeList
 ##5419 74088 75852
 ##6211 91125 93150
 ##Cuban primes are of the form 3*x**2 + 3*x + 1
-primes = list(p for p in primeList(10**6))
+##173 below 10**6
+##338507 below 25*10**12
+
+import math, numbertheory
 cubpri = []
 count = 0
-for x in range(1, 577):
-    if 3*x**2 + 3*x + 1 in primes:
+#10**6 ==> 577, 25*10**12 ==> 2886751
+for x in range(1, 2886751):
+    cp = 3*x*(x + 1) + 1
+    if numbertheory.isPrime(cp):
         count += 1
-        cubpri += [3*x**2 + 3*x + 1]
+        cubpri += [cp]
 print(count)
 
