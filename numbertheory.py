@@ -58,11 +58,11 @@ def _isPrime(n):
         divisor = divisor + 6
     return True
 
-#Uses a combination of trial testing (below 1000) and Miller-Rabin Strong primality test with 'a' an element of primes below k
-def isPrime(n, k = 12):
+#Uses a combination of trial testing and Miller-Rabin Strong primality test with primes
+def isPrime(n, trialDivision = 1000, millerRabin = 12):
     if n < 2:
         return False
-    for p in primeList(1000):
+    for p in primeList(min(trialDivision, int(math.sqrt(n))+1)):
         if p ** 2 > n:
             return True
         if n % p == 0:
@@ -72,7 +72,7 @@ def isPrime(n, k = 12):
     while d & 1 == 0:
         d = d >> 1
         s += 1
-    for a in primeList(k):
+    for a in primeList(min(n-1, millerRabin)):
         aPrime = False
         if pow(a, d, n) == 1:
             continue
