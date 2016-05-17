@@ -263,38 +263,6 @@ def sqrtGen(n):
         c -= y
         yield x
 
-#returns fib(n)
-def _fib(n):
-    if n == 0:
-        return (0, 1)
-    else:
-        a, b = _fib(n // 2)
-        c = a * (b * 2 - a)
-        d = a * a + b * b
-        if n & 1 == 0:
-            return (c, d)
-        else:
-            return (d, c + d)
-
-#returns fib(n)%m
-def _fibmod(n, m):
-    if n == 0:
-        return (0, 1)
-    else:
-        a, b = _fibmod(n // 2, m)
-        c = a * (b * 2 - a)
-        d = a**2 + b**2
-        if n & 1 == 0:
-            return (c%m, d%m)
-        else:
-            return (d%m, (c + d)%m)
-
-#interface for _fib(n) and _fibmod(n, m)
-def fib(n, m = None):
-    if m == None:
-        return _fib(n)[0]
-    return _fibmod(n, m)[0]
-
 #traverses the pythagorean tree with specific path using 'u', 'a', 'd'
 def pythagTreeTraverse(traversal):
     uad = {'u':lambda m, n: (2*m-n, m),
