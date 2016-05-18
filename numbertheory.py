@@ -202,16 +202,20 @@ def totientList(n):
 
 #returns period of 1/n
 def reciperiod(n):
-    if n <= 0:
+    if n <= 2:
         return 0
+    if n % 2 == 0 or n % 5 == 0:
+        while n % 2 == 0:
+            n = n // 2
+        while n % 5 == 0:
+            n = n // 5
+        return reciperiod(n)
     count = 1
-    LIMIT = 1000
-    while 10**count % n != 1 and count < LIMIT:
-    	count += 1
-    if count == LIMIT:
-        return 0
-    else:
-        return count
+    current = 10 % n
+    while current != 1:
+        current = (10 * current) % n
+        count += 1
+    return count
 
 #continued fraction of sqrt(n), stops after it repeats
 def contfracsqrt(n):
