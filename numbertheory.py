@@ -1,6 +1,6 @@
 import math
 import itertools
-
+import random
 #generates primes up to n
 def primeList(n):
     m = (n - 1) // 2
@@ -44,35 +44,26 @@ def lucky(n):
         d = siv[a]
         yield siv[a]
         a += 1
-
-#depreciated trial test
-def _isPrime(n):
-    if n == 2 or n == 3:
-        return True
-    if n & 1 == 0 or n % 3 == 0 or n == 1 or n < 0:
-        return False
-    divisor = 5
-    while divisor <= math.sqrt(n):
-        if n % divisor == 0 or n % (divisor + 2) == 0:
-            return False
-        divisor = divisor + 6
-    return True
-
-#Uses a combination of trial testing and Miller-Rabin Strong primality test with primes
-def isPrime(n, trialDivision = 1000, millerRabin = 12):
+#following tests return as follows -1:Definetly not prime, 0: passed the test, but no promises, 1:Definetly prime
+def _isPrimeTrialDivision(n, bound = 1000):
     if n < 2:
-        return False
-    for p in primeList(min(trialDivision, int(math.sqrt(n))+1)):
+        return -1
+    for p in primeList(bound):
         if p ** 2 > n:
-            return True
+            return 1
         if n % p == 0:
-            return False
+            return -1
+    return 0
+
+def _isPrimeMillerRabin(n, bound = 12):
+    if n < 2:
+        return -1
     d = n - 1
     s = 0
     while d & 1 == 0:
         d = d >> 1
         s += 1
-    for a in primeList(min(n-1, millerRabin)):
+    for a in primeList(min(n-1, bound)):
         aPrime = False
         if pow(a, d, n) == 1:
             continue
@@ -81,45 +72,100 @@ def isPrime(n, trialDivision = 1000, millerRabin = 12):
                 aPrime = True
                 break
         if not aPrime:
-            return False
+            return -1
+    return 0
+
+#Uses a combination of primality tests
+def isPrime(n, trialDivision = 1000, millerRabin = 12):
+    t = _isPrimeTrialDivision(n, trialDivision)
+    if t == -1:
+        return False
+    if t == 1:
+        return True
+    m = _isPrimeMillerRabin(n, millerRabin)
+    if m == -1:
+        return False
     return True
 
 #trivial divison factoring of n
-def primeFactor(n):
+def _trialFactor(n):
     if n <= 0:
         return
-    exp = 0
-    while n & 1 == 0:
-        n = n >> 1
-        exp += 1
+    #check 2
+    exp = _exponent(n, 2)
+    n = n // 2**exp
     if exp > 0:
         yield (2, exp)
-
+    #check 3
     div = 3
-    exp = 0
-    while n % div == 0:
-        n = n // div
-        exp += 1
+    exp = _exponent(n, div)
+    n = n // div**exp
     if exp > 0:
         yield (3, exp)
-    
+    #begin trial division with increments of 6
     div = 5
     while div <= math.sqrt(n):
-        exp = 0
-        while n % div == 0:
-            n = n // div
-            exp += 1
+        #check div
+        exp = _exponent(n, div)
+        n = n // div**exp
         if exp > 0:
             yield (div, exp)
-        exp = 0
-        while n % (div + 2) == 0:
-            n = n // (div + 2)
-            exp += 1
+        #check div + 2
+        exp = _exponent(n, div + 2)
+        n = n // (div + 2)**exp
         if exp > 0:
             yield (div + 2, exp)
+        #increment div
         div = div + 6
     if n != 1:
         yield (n, 1)
+
+#Pollard's rho algorithm to find random factors
+def _rhofactor(n):
+    d = n
+    while d == n:
+        x = random.randint(1, n)
+        c = random.randint(1, n)
+        y = x
+        f = lambda a:(a ** 2 + c)%n
+        d = 1
+        while d == 1:
+            x = f(x)
+            y = f(f(y))
+            d = math.gcd(abs(x - y), n)
+    if isPrime(d):
+        return d
+    return _rhofactor(d)
+
+#probably efficient factoring
+def factor(n):
+    if n <= 0:
+        return
+    #trial division
+    for div in primeList(1000):
+        exp = _exponent(n, div)
+        n = n // div**exp
+        if exp > 0:
+            yield (div, exp)
+    #rho factoring
+    while not isPrime(n) and n != 1:
+        div = _rhofactor(n)
+        exp = _exponent(n, div)
+        n = n // div**exp
+        yield (div, exp)
+    #make sure n is 1
+    if n != 1:
+        yield (n, 1)
+
+#finds exponent of p in n
+def _exponent(n, p):
+    if n % p != 0:
+        return 0
+    i = 0
+    while n % p**(2**i) == 0:
+        i += 1
+    i -= 1
+    return 2**i + _exponent(n//p**2**i, p)
 
 #returns number of divisors of n
 def numDivisor(n):
@@ -305,12 +351,13 @@ def pythag(limits = lambda m,n: True):
         branch = []
 
 #extended euclidian algorithm
-def egcd(a, b):
-    if a == 0:
-        return (b, 0, 1)
-    else:
-        g, y, x = egcd(b % a, a)
-        return (g, x - (b // a) * y, y)
+def egcd(b, n):
+    x0, x1, y0, y1 = 1, 0, 0, 1
+    while n != 0:
+        q, b, n = b // n, n, b % n
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+    return  b, x0, y0
 
 #modular multiplicative inverse
 def modinv(a, m):
