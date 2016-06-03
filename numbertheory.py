@@ -167,6 +167,27 @@ def _exponent(n, p):
     i -= 1
     return 2**i + _exponent(n//p**2**i, p)
 
+#returns a list of the divisors of n
+def divisorList(n):
+    factors = list(factor(n))
+    factors.sort()
+    nfactors = len(factors)
+    f = [0] * nfactors
+    while True:
+        k = 1
+        for c in [factors[x][0]**f[x] for x in range(nfactors)]:
+            k *= c
+        yield k
+        i = 0
+        while True:
+            f[i] += 1
+            if f[i] <= factors[i][1]:
+                break
+            f[i] = 0
+            i += 1
+            if i >= nfactors:
+                return
+
 #returns number of divisors of n
 def numDivisor(n):
     if n <= 0:
@@ -188,7 +209,7 @@ def sumDivisor(n):
     return t
 
 #generates sigma up to n, each divisor is raised to power x
-def divisorList(n, x):
+def sigmaList(n, x):
     if n <= 0:
         yield 0
         return
@@ -215,10 +236,8 @@ def divisorList(n, x):
 def totient(n):
     if n <= 0:
         return 0
-    PrimeFactors = list(primeFactor(n))
-    div = [PrimeFactors[x][0] for x in range(0,len(PrimeFactors))]
-    for x in div:
-        n = n * (x - 1) // x
+    for div, exp in factor(n):
+        n = n * (div - 1) // div
     return n
 
 #generates totient of numbers up to n, beginning with 0

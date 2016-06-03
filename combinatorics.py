@@ -46,6 +46,10 @@ def _fibmod(n, m):
 
 #interface for _fib(n) and _fibmod(n, m)
 def fib(n, m = None):
+    if n < 0:
+        if m == None:
+            return (-1)**(-n+1) * _fib(-n)[0]
+        return ((-1)**(-n+1) * _fibmod(-n, m)[0])%m
     if m == None:
         return _fib(n)[0]
     return _fibmod(n, m)[0]

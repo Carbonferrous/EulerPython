@@ -1,4 +1,4 @@
-from numbertheory import _fibmod, primeList, isPrime, _isPrime
+
 
 def prime(n):
     foundp = [2, 3]
@@ -33,8 +33,9 @@ n2 = 136181869469132489020293365852256182377286394691192846117390651100308384927
 #random pseudoprime or something
 n3 = 1913321727956758256045006260999587791041
 
-print("Hello")
-for i in range(10**5):
-    if _isPrime(i) != isPrime(i):
-        print(i)
-print("World")
+import timeit
+from cryptography import randprime
+x = randprime(64)
+y = randprime(64)
+n = x * y
+print(timeit.timeit('list(factor(n))', setup='from numbertheory import factor\nn=' + str(n), number=1))

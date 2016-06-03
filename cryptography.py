@@ -1,5 +1,6 @@
-import random
-from numbertheory import isPrime, primeList
+import random, math
+from numbertheory import isPrime, primeList, modinv
+from math import gcd
 def randprime(bits, safeness = 0):
     rng = random.SystemRandom()
     i = 0
@@ -12,6 +13,17 @@ def randprime(bits, safeness = 0):
             return i
         i += 2
 
+def getkeys(p, q):
+    phi = (p - 1) * (q - 1)
+    e = 2**16 + 1
+    if gcd(e, phi) == 1 and gcd(e-1, p-1) == 2 and gcd(e-1, q-1) == 2:
+        return (e, modinv(e, phi))
+    rng = random.SystemRandom()
+    while True:
+        e = rng.randint(3, int(math.sqrt(phi//gcd(p-1, q-1))))
+        if gcd(e, phi) == 1 and gcd(e-1, p-1) == 2 and gcd(e-1, q-1) == 2:
+            return (e, modinv(e, phi))
+    
 def i2osp(x, xLen):
     if x >= 256 ** xLen:
         raise ValueError('integer too large')
