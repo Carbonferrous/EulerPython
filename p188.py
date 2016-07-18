@@ -5,4 +5,4 @@ def teration(a, n, m):
 		return 1
 	return pow(a, teration(a, n-1, totient(m)),m)
 
-print(teration(1777, 1855, 10**8))
+print(teration(1777, 1855, 10**500))
