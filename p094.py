@@ -32,4 +32,4 @@ for i in range(4, 31, 2):
         a = (f0*2-1)//3
         s += 3*a-1
         print(i//2-1, "-", a, a, a-1)
-    
+print('Sum of perimeter:', s)
