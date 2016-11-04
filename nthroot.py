@@ -42,4 +42,3 @@ def nthroot(radicand, n):#, base = 10):
 x = nthroot(2, 2)
 for i in range(10100):
     print(next(x), end = '')
-
