@@ -1,10 +1,14 @@
-def fibList(UpperLimit):
-    a, b, c = 1, 1, 2
-    fib = [a, b]
-    while c < UpperLimit:
-        fib.append(c)
+def evenfibgen():
+    a, b, c = 2, 8, 34
+    while True:
+        yield a
         a, b = b, c
-        c = a + b
-    return fib
+        c = 4 * b + a
 
-print(sum(filter(lambda x: x % 2 == 0, fibList(4000000))))
+s = 0
+a = evenfibgen()
+c = next(a)
+while c < 4000000:
+    s += c
+    c = next(a)
+print(s)

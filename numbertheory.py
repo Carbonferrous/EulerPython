@@ -1,7 +1,9 @@
 import math
-import itertools
+# import itertools
 import random
-#generates primes up to n
+
+
+# generates primes up to n
 def primeList(n):
     m = (n - 1) // 2
     if m < 0:
@@ -23,7 +25,8 @@ def primeList(n):
         if B[x]:
             yield p + 2 * (x - i)
 
-#generates lucky numbers up to n
+
+# generates lucky numbers up to n
 def lucky(n):
     if n >= 3:
         yield 1
@@ -37,15 +40,18 @@ def lucky(n):
     a = 1
     d = 2
     while a < len(siv):
-        temp = list(filter(lambda x: x[0] % d != 0, list(enumerate(siv,1))))
-        siv = list(temp[b][1] for b in range(0,len(temp)))
+        temp = list(filter(lambda x: x[0] % d != 0, list(enumerate(siv, 1))))
+        siv = list(temp[b][1] for b in range(0, len(temp)))
         if a >= len(siv):
             break
         d = siv[a]
         yield siv[a]
         a += 1
-#following tests return as follows -1:Definetly not prime, 0: passed the test, but no promises, 1:Definetly prime
-def _isPrimeTrialDivision(n, bound = 1000):
+
+
+# following tests return as follows -1:Definetly not prime, 0: passed the test,
+# but no promises, 1:Definetly prime
+def _isPrimeTrialDivision(n, bound=1000):
     if n < 2:
         return -1
     for p in primeList(bound):
@@ -55,7 +61,8 @@ def _isPrimeTrialDivision(n, bound = 1000):
             return -1
     return 0
 
-def _isPrimeMillerRabin(n, bound = 12):
+
+def _isPrimeMillerRabin(n, bound=12):
     if n < 2:
         return -1
     d = n - 1
@@ -75,8 +82,9 @@ def _isPrimeMillerRabin(n, bound = 12):
             return -1
     return 0
 
-#Uses a combination of primality tests
-def isPrime(n, trialDivision = 1000, millerRabin = 12):
+
+# Uses a combination of primality tests
+def isPrime(n, trialDivision=1000, millerRabin=12):
     t = _isPrimeTrialDivision(n, trialDivision)
     if t == -1:
         return False
@@ -87,47 +95,49 @@ def isPrime(n, trialDivision = 1000, millerRabin = 12):
         return False
     return True
 
-#trivial divison factoring of n
+
+# trivial divison factoring of n
 def _trialFactor(n):
     if n <= 0:
         return
-    #check 2
+    # check 2
     exp = _exponent(n, 2)
     n = n // 2**exp
     if exp > 0:
         yield (2, exp)
-    #check 3
+    # check 3
     div = 3
     exp = _exponent(n, div)
     n = n // div**exp
     if exp > 0:
         yield (3, exp)
-    #begin trial division with increments of 6
+    # begin trial division with increments of 6
     div = 5
     while div <= math.sqrt(n):
-        #check div
+        # check div
         exp = _exponent(n, div)
         n = n // div**exp
         if exp > 0:
             yield (div, exp)
-        #check div + 2
+        # check div + 2
         exp = _exponent(n, div + 2)
         n = n // (div + 2)**exp
         if exp > 0:
             yield (div + 2, exp)
-        #increment div
+        # increment div
         div = div + 6
     if n != 1:
         yield (n, 1)
 
-#Pollard's rho algorithm to find random factors
+
+# Pollard's rho algorithm to find random factors
 def _rhofactor(n):
     d = n
     while d == n:
         x = random.randint(1, n)
         c = random.randint(1, n)
         y = x
-        f = lambda a:(a ** 2 + c)%n
+        f = lambda a: (a ** 2 + c) % n
         d = 1
         while d == 1:
             x = f(x)
@@ -137,27 +147,29 @@ def _rhofactor(n):
         return d
     return _rhofactor(d)
 
-#probably efficient factoring
+
+# probably efficient factoring
 def factor(n):
     if n <= 0:
         return
-    #trial division
+    # trial division
     for div in primeList(1000):
         exp = _exponent(n, div)
         n = n // div**exp
         if exp > 0:
             yield (div, exp)
-    #rho factoring
+    # rho factoring
     while not isPrime(n) and n != 1:
         div = _rhofactor(n)
         exp = _exponent(n, div)
         n = n // div**exp
         yield (div, exp)
-    #make sure n is 1
+    # make sure n is 1
     if n != 1:
         yield (n, 1)
 
-#finds exponent of p in n
+
+# finds exponent of p in n
 def _exponent(n, p):
     if n % p != 0:
         return 0
@@ -167,7 +179,8 @@ def _exponent(n, p):
     i -= 1
     return 2**i + _exponent(n//p**2**i, p)
 
-#returns a list of the divisors of n
+
+# returns a list of the divisors of n
 def divisorList(n):
     factors = list(factor(n))
     factors.sort()
@@ -188,7 +201,8 @@ def divisorList(n):
             if i >= nfactors:
                 return
 
-#returns number of divisors of n
+
+# returns number of divisors of n
 def numDivisor(n):
     if n <= 0:
         return
@@ -198,17 +212,19 @@ def numDivisor(n):
         t *= exp + 1
     return t
 
-#returns sum of divisors of n
+
+# returns sum of divisors of n
 def sumDivisor(n):
     if n <= 0:
         return
-    p = primeFactor(n)
+    p = factor(n)
     t = 1
     for div, exp in p:
         t *= (div ** (exp + 1) - 1) // (div - 1)
     return t
 
-#generates sigma up to n, each divisor is raised to power x
+
+# generates sigma up to n, each divisor is raised to power x
 def sigmaList(n, x):
     if n <= 0:
         yield 0
@@ -232,7 +248,8 @@ def sigmaList(n, x):
             divList[i] += div**x
         yield divList[div]
 
-#returns totient of n
+
+# returns totient of n
 def totient(n):
     if n <= 0:
         return 0
@@ -240,7 +257,8 @@ def totient(n):
         n = n * (div - 1) // div
     return n
 
-#generates totient of numbers up to n, beginning with 0
+
+# generates totient of numbers up to n, beginning with 0
 def totientList(n):
     if n <= 0:
         yield 0
@@ -265,7 +283,8 @@ def totientList(n):
         yield divList[x]
         x += 1
 
-#returns period of 1/n
+
+# returns period of 1/n
 def reciperiod(n):
     if n <= 2:
         return 0
@@ -282,7 +301,8 @@ def reciperiod(n):
         count += 1
     return count
 
-#continued fraction of sqrt(n), stops after it repeats
+
+# continued fraction of sqrt(n), stops after it repeats
 def contfracsqrt(n):
     m = 0
     d = 1
@@ -295,7 +315,8 @@ def contfracsqrt(n):
         a = int((a0 + m) / d)
         yield a
 
-#continued fraction list to real fraction
+
+# continued fraction list to real fraction
 def contfrac2real(a):
     n = a[len(a) - 1]
     d = 1
@@ -304,7 +325,8 @@ def contfrac2real(a):
         n = a[i] * d + n
     return [n, d]
 
-#infinite precision sqrt decimal generator
+
+# infinite precision sqrt decimal generator
 def sqrtGen(n):
     numberS = str(n)
     if "." not in numberS:
@@ -320,7 +342,7 @@ def sqrtGen(n):
     p = 0
     x = 0
     y = 0
-    d = len(a)//2
+    # d = len(a)//2
     while True:
         c = 100 * c + int(numberS[0:2])
         numberS = numberS[2:] + "00"
@@ -332,38 +354,39 @@ def sqrtGen(n):
         c -= y
         yield x
 
-#infinite precision nth root generator with commented out base
-def nthroot(radicand, n):#, base = 10):
-    #padding root
+
+# infinite precision nth root generator with commented out base
+def nthroot(radicand, n):  # , base = 10):
+    # padding root
     rad = str(radicand)
     if "." not in rad:
         rad += "."
     f = rad.split(".")[0]
     h = rad.split(".")[1]
-    f = "0"*((n-len(f))%n) + f
-    h = h + "0"*((n-len(h))%n)
+    f = "0"*((n-len(f)) % n) + f
+    h = h + "0"*((n-len(h)) % n)
     rad = f + h
-    #initialization
-    #y, r = 0, 0
-    b = 10#base
+    # initialization
+    # y, r = 0, 0
+    b = 10  # base
     beta = b - 1
     alpha = int(rad[:n])
     rad = rad[n:] + '0'*n
-    #beta = largest beta where (b*y+beta)**n <= temp
+    # beta = largest beta where (b*y+beta)**n <= temp
     for beta in range(b - 1, -1, -1):
         if beta**n <= alpha:
             break
     yield beta
     y = beta
     r = alpha-beta**n
-    #main loop
+    # main loop
     while r != 0 or not all(x == '0' for x in rad):
         alpha = int(rad[:n])
         rad = rad[n:] + '0'*n
         temp = b**n*r+alpha + (b*y)**n
-        #beta = largest beta where (b*y+beta)**n <= temp
-        #(b*y+beta)**n <= temp
-        #beta = int(temp ** (1/n) - b*y) + 1
+        # beta = largest beta where (b*y+beta)**n <= temp
+        # (b*y+beta)**n <= temp
+        # beta = int(temp ** (1/n) - b*y) + 1
         for beta in range(b - 1, -1, -1):
             if (b*y+beta)**n <= temp:
                 break
@@ -374,11 +397,12 @@ def nthroot(radicand, n):#, base = 10):
         yield 0
     return
 
-#traverses the pythagorean tree with specific path using 'u', 'a', 'd'
+
+# traverses the pythagorean tree with specific path using 'u', 'a', 'd'
 def pythagTreeTraverse(traversal):
-    uad = {'u':lambda m, n: (2*m-n, m),
-           'a':lambda m, n: (2*m+n, m),
-           'd':lambda m, n: (m+2*n, n)}
+    uad = {'u': lambda m, n: (2*m-n, m),
+           'a': lambda m, n: (2*m+n, m),
+           'd': lambda m, n: (m+2*n, n)}
     uad['U'] = uad['u']
     uad['A'] = uad['a']
     uad['D'] = uad['d']
@@ -387,13 +411,14 @@ def pythagTreeTraverse(traversal):
         m, n = uad[t](m, n)
     return (m**2-n**2, 2*m*n, m**2+n**2)
 
-#generates pythagorean triplets with limits restricting the search space
-def pythag(limits = lambda m,n: True):
-    #a, b, c = m**2-n**2, 2*m*n, m**2+n**2
-    uad = {'u':lambda m, n: (2*m-n, m), #increases at rate approaching 1 (smaller than d)
-           'a':lambda m, n: (2*m+n, m), #increases at rate approaching 2sqrt2+3
-           'd':lambda m, n: (m+2*n, n)} #increases at rate approaching 1
-    l = limits #function of m,n to define when to continue
+
+# generates pythagorean triplets with limits restricting the search space
+def pythag(limits=lambda m, n: True):
+    # a, b, c = m**2-n**2, 2*m*n, m**2+n**2
+    uad = {'u': lambda m, n: (2*m-n, m),  # increases at rate \to 1 (<d)
+           'a': lambda m, n: (2*m+n, m),  # increases at rate \to 2sqrt2+3
+           'd': lambda m, n: (m+2*n, n)}  # increases at rate \to 1
+    l = limits  # function of m,n to define when to continue
     root = [(2, 1)]
     branch = []
     while len(root) > 0:
@@ -411,16 +436,18 @@ def pythag(limits = lambda m,n: True):
         root = branch
         branch = []
 
-#extended euclidian algorithm
+
+# extended euclidian algorithm
 def egcd(b, n):
     x0, x1, y0, y1 = 1, 0, 0, 1
     while n != 0:
         q, b, n = b // n, n, b % n
         x0, x1 = x1, x0 - q * x1
         y0, y1 = y1, y0 - q * y1
-    return  b, x0, y0
+    return b, x0, y0
 
-#modular multiplicative inverse
+
+# modular multiplicative inverse
 def modinv(a, m):
     g, x, y = egcd(a, m)
     if g != 1:
