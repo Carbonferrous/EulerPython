@@ -326,6 +326,41 @@ def contfrac2real(a):
     return [n, d]
 
 
+# solves diophantine equation x**2 + D*y**2 == c given inital (p, q) solution
+def pell2(D, c, p, q):
+    assert p**2 - D*q**2 == c
+    for r, s in pell(D):
+        yield (p*r+D*q*s, p*s+q*r)
+        # yield (p*r-D*q*s, p*s-q*r)  # yeilds the pairwise solution
+
+
+# solves x**2 + D*y**2 == 1
+def pell(D):
+    a = list(contfracsqrt(D))
+    r = len(a[1:]) - 1
+    if r % 2 == 0:
+        start = 2*r+1
+        increment = 2*(r+1)
+    else:
+        start = r
+        increment = r+1
+    p = [a[0], a[0]*a[1]+1, 0]
+    q = [1, a[1], 0]
+    a = a[1:]
+    n = 2
+    i = 0
+    while True:
+        if n-2 == start + i*increment:
+            i += 1
+            yield p[0], q[0]
+        p[2] = a[(n % (r+1))-1]*p[1] + p[0]
+        p[0], p[1] = p[1], p[2]
+        q[2] = a[(n % (r+1))-1]*q[1] + q[0]
+        q[0], q[1] = q[1], q[2]
+        n += 1
+    return
+
+
 # infinite precision sqrt decimal generator
 def sqrtGen(n):
     numberS = str(n)
