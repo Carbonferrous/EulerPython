@@ -1,5 +1,5 @@
 from math import gcd
-from numbertheory import divisorList, totient, isPrime, factor
+from numbertheory import divisorList, totient, isPrime, factor, primeList
 def R(k):
     return (10**k - 1) // 9
 
@@ -43,5 +43,23 @@ def A(n):
 ##def rfactor(k):
 ##    for div, exp in factor(k):
 ##        R(k) % R(div) == 0
+def isrfactor(k, p):
+    return 1 == pow(10, k, 9*p)
+
+#i = 0
+#s = 0
+#for p in primeList(200000):
+#    if i <= 40 and isrfactor(10**9, p):
+#        i += 1
+#        if i > 40:
+#            break
+#        s += p
+#        print(i, p)
+#print(s)
 
 ##print('p133')
+#s = 0
+#for p in primeList(100000):
+#    if not any(isrfactor(10**n, p) for n in range(1, 17)):
+#        s += p
+#print(s)
