@@ -49,6 +49,18 @@ def lucky(n):
         a += 1
 
 
+# generates squarefree numbers below n (might not work)
+def sqrfree(n):
+    if n <= 1:
+        return
+    B = [True] * n
+    for p in primeList(int(math.sqrt(n))):
+        B[p**2::p**2] = [False]*len(B[p**2::p**2])
+    for x in range(1, n):
+        if B[x]:
+            yield x
+
+
 # following tests return as follows -1:Definetly not prime, 0: passed the test,
 # but no promises, 1:Definetly prime
 def _isPrimeTrialDivision(n, bound=1000):

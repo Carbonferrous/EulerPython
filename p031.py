@@ -1,5 +1,5 @@
 count = 1
-for hun in range(0,3):
+for hun in range(0, 3):
     left = 200 - 100 * hun
     for fif in range(0, left//50 + 2):
         left -= 50 * fif
