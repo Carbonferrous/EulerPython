@@ -501,3 +501,41 @@ def modinv(a, m):
         raise Exception('modular inverse does not exist')
     else:
         return x % m
+
+
+# solves R**2 == n mod p where p is an odd prime, uses Tonelli–Shanks algorithm
+def modsqrt(n, p):
+    # assert p % 2 == 1
+    # assert legendre(n, p) == 1
+    Q = p - 1
+    S = 0
+    while Q % 2 == 0:
+        S += 1
+        Q = Q//2
+    if S == 1:
+        return pow(n, (p+1)//4, p), p - pow(n, (p+1)//4, p)
+    z = 2
+    while legendre(z, p) != -1:
+        z += 1
+    c = pow(z, Q, p)
+    R = pow(n, (Q+1)//2, p)
+    t = pow(n, Q, p)
+    M = S
+    while t % p != 1:
+        for i in range(1, M):
+            if pow(t, 2**i, p) == 1:
+                break
+        b = pow(c, 2**(M-i-1), p)
+        R = (R*b) % p
+        t = (t*b**2) % p
+        c = pow(b, 2, p)
+        M = i
+    return R, p-R
+
+
+# determines if a is a quadratic residue of p (1), or if a = 0 (0)
+def legendre(a, p):
+    l = pow(a, p//2, p)
+    if l not in [0, 1]:
+        l = -1
+    return l
