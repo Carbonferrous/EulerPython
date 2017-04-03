@@ -34,9 +34,9 @@ def factfact(n):
 
 # generating functions (or at least the beginning of one)
 class polynomial(dict):
-    def __init__(self):
+    def __init__(self, keylength=1):
         super().__init__()
-
+        self.keylength = keylength
     def __str__(self):
         s = ''
         for k in self:
@@ -62,19 +62,20 @@ class polynomial(dict):
         if type(c) is polynomial:
             for a in self:
                 for o in c:
-                    if a+o in r:
-                        r[a+o] += self[a]*c[o]
+                    assert len(a) == len(o)
+                    if tuple(a[i]+o[i] for i in range(len(a))) in r:
+                        r[tuple(a[i]+o[i] for i in range(len(a)))] += self[a]*c[o]
                     else:
-                        r[a+o] = self[a]*c[o]
+                        r[tuple(a[i]+o[i] for i in range(len(a)))] = self[a]*c[o]
         return r
 
-    def __pow__(self, c):
-        assert type(c) is int
-        r = polynomial()
-        r += {0: 1}
-        for i in range(c):
-            r = r * self
-        return r
+#    def __pow__(self, c):
+#        assert type(c) is int
+#        r = polynomial()
+#        r += {(0)*len(: 1}
+#        for i in range(c):
+#            r = r * self
+#        return r
 
     def __add__(self, o):
         r = polynomial()

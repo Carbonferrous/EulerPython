@@ -166,6 +166,7 @@ def factor(n):
         return
     # trial division
     for div in primeList(1000):
+#    for div in primes:
         exp = _exponent(n, div)
         n = n // div**exp
         if exp > 0:
