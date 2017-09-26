@@ -540,3 +540,14 @@ def legendre(a, p):
     if l not in [0, 1]:
         l = -1
     return l
+
+
+# yields pairs of relatively prime numbers from farey, with denom < n
+def farey(n):
+    a, b, c, d = 0, 1, 1, n
+    yield (a, b)
+    while c <= n:
+        k = int((n+b)/d)
+        a, b, c, d = c, d, k*c - a, k*d - b
+        yield (a, b)
+    return
