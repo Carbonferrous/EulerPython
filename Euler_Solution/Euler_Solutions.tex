@@ -1,0 +1,28 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+%%% PAGE DIMENSIONS
+\usepackage{geometry}
+\geometry{letterpaper}
+\geometry{margin=1in}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+\title{Project Euler Problem Solutions}
+\author{Alexandre Ye}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Multiples of 3 and 5}
+\subsection{Problem Statement}
+If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23. 
+Find the sum of all the multiples of 3 or 5 below 1000.
+\subsection{Solution}
+ The sum of the natural numbers below $N$ which is a multiple of $d$ can be written as 
+$$S(N,d) = \sum_{i=d}^{\Bigl\lfloor{\frac{N}{d}}\Bigr\rfloor}{i}=d\Bigl\lfloor\frac{N}{d}\Bigr\rfloor(1+\Bigl\lfloor\frac{N}{d}\Bigr\rfloor)/2$$
+Solution $= S(999, 3) + S(999, 5) + S(999, 15) = 233168$
+
+\end{document}

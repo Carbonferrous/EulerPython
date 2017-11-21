@@ -67,7 +67,7 @@
 
 
 
-from numbertheory import fib, _fib
+from combinatorics import fib, _fib
 
 def A1(n):
     return sum(fib(4*i+2) for i in range((n+1)//2)) + sum(fib(2*i) for i in range(1, n+1))
