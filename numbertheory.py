@@ -25,6 +25,17 @@ def primeList(n):
         if B[x]:
             yield p + 2 * (x - i)
 
+# determines primes within a range of numbers [n, m)
+def primeListRange(n, m):
+    primes = primeList(int(math.sqrt(m)+1))
+    siv = [1 for i in range(n, m)]
+    for p in primes:
+        if n <= p:
+            siv[(-n)%p+p::p] = [0]*len(siv[(-n)%p+p::p])
+        else:
+            siv[(-n)%p::p] = [0]*len(siv[(-n)%p::p])
+    siv_prime = list(i + n for i, z in enumerate(siv) if z == 1)
+    return siv_prime, siv
 
 # generates lucky numbers up to n
 def lucky(n):
