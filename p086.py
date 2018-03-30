@@ -37,40 +37,55 @@ def is_square(integer):
         return False
 pyth = []
 a = pythag()
-for i in range(1000):
+for i in range(2000):
     r, s, t = next(a)
     if r > s:
         r, s = s, r
-    if s > 2*r:
-        continue
-    pyth += [(r, s, t)]
-
-smem = {0:0}
-def sol(m):
-    if m in smem:
-        return smem[m]
-    smem[m] = sol(m-1)
-    for r, s, t in pyth:
-        if m % r == 0:
-#            print(r, s, t)
-            smem[m] += m-(m*s//r)//2 - max(0, m - m*s//r)
-            print('a', m, m*s//r, (m*s//r)/2, m-max(0, m - m*s//r))
-            if m*s//r % 2 == 1:
-                smem[m] += 1
-        if m % s == 0:
-            smem[m] += m-(m*r//s)//2 - max(0, m - m*r//s)
-            print('b', m, m*r//s, (m*r//s)/2, m-max(0, m - m*r//s))
-            if m*r//s % 2 == 1:
-                smem[m] += 1
-    return smem[m]
+#    if s > 2*r:
+#        continue
+    pyth += [(r, s)]
+#
+#smem = {0:0}
+#def sol(m):
+#    if m in smem:
+#        return smem[m]
+#    smem[m] = sol(m-1)
+#    for r, s, t in pyth:
+#        if m % r == 0:
+##            print(r, s, t)
+#            smem[m] += m-(m*s//r)//2 - max(0, m - m*s//r)
+#            print('a', m, m*s//r, (m*s//r)/2, m-max(0, m - m*s//r))
+#            if m*s//r % 2 == 1:
+#                smem[m] += 1
+#        if m % s == 0:
+#            smem[m] += m-(m*r//s)//2 - max(0, m - m*r//s)
+#            print('b', m, m*r//s, (m*r//s)/2, m-max(0, m - m*r//s))
+#            if m*r//s % 2 == 1:
+#                smem[m] += 1
+#    return smem[m]
 #print(sol(100))
-n = 12
+#n = 12
+#count = 0
+#for c in range(1, n+1):
+#    for b in range(c, n+1):
+#        for a in range(b, n+1):
+#            if is_square(a**2+(b+c)**2):
+#                print(a, b+c, ';', b, c)
+#                count += 1
+#print()
+#print(count, sol(n))
+m = 100
 count = 0
-for c in range(1, n+1):
-    for b in range(c, n+1):
-        for a in range(b, n+1):
-            if is_square(a**2+(b+c)**2):
-                print(a, b+c, ';', b, c)
+sq = list(i**2 for i in range(int(math.sqrt(5)*m)+2))
+for c in range(1, m+1):
+    for b in range(c, m+1):
+        for a in range(b, m+1):
+#            if a**2 + (b+c)**2 in sq:
+            g = math.gcd(a, b+c)
+            a1 = a//g
+            d = (b+c)//g
+            if d < a1:
+                a1, d = d, a1
+            if (a1, d) in pyth:
                 count += 1
-print()
-print(count, sol(n))
+print(count)

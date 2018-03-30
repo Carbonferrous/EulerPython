@@ -16,3 +16,22 @@ for x in nearbyA:
         minsum = sum(i for i in x)
         minA = x
 print(''.join(str(i) for i in minA))
+
+a = [1]
+a = list((i-k, i, k) for i in a for k in a if i > k)
+print(a)
+a = [1, 2]
+a = list((i-k, i, k)  for i in a for k in a if i > k)
+print(a)
+a = [2, 3, 4]
+a = list((i-k, i, k)  for i in a for k in a if i > k)
+print(a)
+a = [3, 5, 6, 7]
+a = list((i-k, i, k)  for i in a for k in a if i > k)
+print(a)
+a = [6, 9, 11, 12, 13]
+a = list((i-k, i, k)  for i in a for k in a if i > k)
+print(a)
+a = [11, 18, 19, 20, 22, 25]
+a = list((i-k, i, k)  for i in a for k in a if i > k)
+print(a)
